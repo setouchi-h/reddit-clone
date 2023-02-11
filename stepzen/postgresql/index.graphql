@@ -12,8 +12,7 @@ type post {
   username: String
   title: String
   subreddit_id: ID
-  subreddit: subreddit
-    @materializer(query: "getSubreddit")
+  subreddit: subreddit @materializer(query: "getSubreddit")
   image: String
   id: ID!
   created_at: DateTime
@@ -88,7 +87,20 @@ type Query {
   getAllPost: [post]
     @dbquery(
       type: "postgresql"
-      table: "post"
+      query: """
+      SELECT * FROM "post" ORDER BY "post"."created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  getPostListByTopic(topic: String!): [post]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      SELECT *, "post".id as id FROM "post"
+      JOIN "subreddit" on "subreddit"."id" = "post"."id"
+      WHERE "subreddit"."topic" = $1
+      ORDER BY "post"."created_at" desc
+      """
       configuration: "postgresql_config"
     )
   getPostUsingComment_post_id_fkey(post_id: ID!): post

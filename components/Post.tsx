@@ -1,5 +1,14 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  BookmarkIcon,
+  ChatBubbleLeftEllipsisIcon,
+  EllipsisHorizontalIcon,
+  GiftIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline"
 import Avatar from "./Avatar"
+import TimeAgo from "react-timeago"
 
 type Props = {
   post: Post
@@ -16,15 +25,47 @@ function Post({ post }: Props) {
       </div>
       <div className="p-3 pb-1 ">
         {/* Header */}
-        <div>
-            <Avatar seed={post.subreddit?.topic} />
+        <div className="flex items-center space-x-2">
+          <Avatar seed={post.subreddit?.topic} />
+          <p className="text-xs text-gray-400">
+            <span className="font-bold text-black hover:text-blue-400 hover:underline">
+              r/{post.subreddit?.topic}
+            </span>{" "}
+            ・ Posted by u/{post.username} <TimeAgo date={post.created_at} />
+          </p>
         </div>
 
         {/* Body */}
+        <div className="py-4">
+          <h2 className="text-xl font-semibold">{post.title}</h2>
+          <p className="mt-2 text-sm font-light">{post.body}</p>
+        </div>
 
         {/* Image */}
+        <img className="w-full" src={post.image} alt="" />
 
         {/* Footer */}
+        <div className="flex space-x-4 text-gray-400">
+          <div className="postButton">
+            <ChatBubbleLeftEllipsisIcon className="h-6 w-6" />
+            <p className="">{post.comment.length} Comments</p>
+          </div>
+          <div className="postButton">
+            <GiftIcon className="h-6 w-6" />
+            <p className="hidden sm:inline">Award</p>
+          </div>
+          <div className="postButton">
+            <ShareIcon className="h-6 w-6" />
+            <p className="hidden sm:inline">Share</p>
+          </div>
+          <div className="postButton">
+            <BookmarkIcon className="h-6 w-6" />
+            <p className="hidden sm:inline">Save</p>
+          </div>
+          <div className="postButton">
+            <EllipsisHorizontalIcon className="h-6 w-6" />
+          </div>
+        </div>
       </div>
     </div>
   )
