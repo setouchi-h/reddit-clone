@@ -8,7 +8,7 @@ type Props = {
 
 function Avatar({ seed, large }: Props) {
   const { data: session } = useSession()
-
+  console.log(seed)
   return (
     <div
       className={`relative h-10 w-10 overflow-hidden rounded-full border-gray-300 bg-white ${

@@ -12,7 +12,8 @@ type post {
   username: String
   title: String
   subreddit_id: ID
-  subreddit: subreddit @materializer(query: "getSubreddit")
+  subreddit: subreddit
+    @materializer(query: "getSubreddit")
   image: String
   id: ID!
   created_at: DateTime
@@ -84,6 +85,12 @@ type Query {
       """
       configuration: "postgresql_config"
     )
+  getAllPost: [post]
+    @dbquery(
+      type: "postgresql"
+      table: "post"
+      configuration: "postgresql_config"
+    )
   getPostUsingComment_post_id_fkey(post_id: ID!): post
     @dbquery(
       type: "postgresql"
@@ -135,6 +142,15 @@ type Query {
       """
       configuration: "postgresql_config"
     )
+  getSubredditByTopic(topic: String!): subreddit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT * FROM "subreddit" WHERE "topic" = $1
+      """
+      configuration: "postgresql_config"
+    )
   subreddit(id: ID!): subreddit
     @dbquery(
       type: "postgresql"
@@ -165,6 +181,7 @@ type Query {
       schema: "public"
       query: """
       SELECT "created_at", "id", "post_id", "upvote", "username" FROM "vote" WHERE "post_id" = $1
+      ORDER BY "created_at" desc
       """
       configuration: "postgresql_config"
     )
@@ -207,12 +224,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertComment(
-    username: String
-    post_id: ID
-    text: String
-    created_at: DateTime
-  ): comment
+  insertComment(username: String, post_id: ID, text: String, created_at: DateTime): comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -251,14 +263,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertPost(
-    body: String
-    subreddit_id: ID
-    created_at: DateTime
-    title: String
-    username: String
-    image: String
-  ): post
+  insertPost(body: String, subreddit_id: ID, title: String, username: String, image: String): post
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -332,12 +337,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertVote(
-    username: String
-    post_id: ID
-    created_at: DateTime
-    upvote: Boolean
-  ): vote
+  insertVote(username: String, post_id: ID, created_at: DateTime, upvote: Boolean): vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -345,13 +345,7 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  updateVote(
-    id: ID!
-    created_at: DateTime
-    post_id: ID
-    upvote: Boolean
-    username: String
-  ): vote
+  updateVote(id: ID!, created_at: DateTime, post_id: ID, upvote: Boolean, username: String): vote
     @dbquery(
       type: "postgresql"
       schema: "public"
