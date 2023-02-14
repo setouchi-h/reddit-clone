@@ -35,7 +35,7 @@ export const GET_ALL_POSTS = gql`
 
 export const GET_SUBREDDITS_WITH_LIMIT = gql`
   query MyQuery($limit: Int!) {
-    getSubredditWithLimit(limit: $limit) {
+    getSubredditListLimit(limit: $limit) {
       created_at
       id
       topic

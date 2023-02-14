@@ -21,10 +21,10 @@ type post {
 }
 
 type subreddit {
-  topic: String
+  topic: String!
   post: [post] @materializer(query: "getPostUsingPost_subreddit_id_fkey")
   id: ID!
-  created_at: DateTime
+  created_at: DateTime!
 }
 
 type vote {
@@ -41,6 +41,17 @@ The following queries are just a set of examples of how to access your schema.
 Feel free to modify them or aggregate more.
 """
 type Query {
+  getSubredditListLimit(limit: Int!): [subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT * FROM "subreddit"
+      ORDER BY "created_at" desc
+      LIMIT $1
+      """
+      configuration: "postgresql_config"
+    )
   " Queries for type 'comment' "
   comment(id: ID!): comment
     @dbquery(
@@ -160,17 +171,6 @@ type Query {
       schema: "public"
       query: """
       SELECT * FROM "subreddit" WHERE "topic" = $1
-      """
-      configuration: "postgresql_config"
-    )
-  getSubredditWithLimit(limit: Int!): [subreddit]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT * FROM "subreddit"
-      ORDER BY "created_at" desc
-      LIMIT $1
       """
       configuration: "postgresql_config"
     )

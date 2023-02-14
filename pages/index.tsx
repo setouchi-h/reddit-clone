@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     },
   })
 
-  const subreddits: Subreddit[] = data?.getSubredditWithLimit
+  const subreddits: Subreddit[] = data?.getSubredditListLimit
   console.log(error)
 
   return (
