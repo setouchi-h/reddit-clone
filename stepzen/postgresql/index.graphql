@@ -163,6 +163,17 @@ type Query {
       """
       configuration: "postgresql_config"
     )
+  getSubredditWithLimit(limit: Int!): [subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      SELECT * FROM "subreddit"
+      ORDER BY "created_at" desc
+      LIMIT $1
+      """
+      configuration: "postgresql_config"
+    )
   subreddit(id: ID!): subreddit
     @dbquery(
       type: "postgresql"
@@ -177,22 +188,13 @@ type Query {
       table: "subreddit"
       configuration: "postgresql_config"
     )
-  subredditPaginatedList(first: Int, after: Int): [subreddit]
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      query: """
-      SELECT "created_at", "id", "topic" FROM "subreddit" ORDER BY "id" LIMIT $1 OFFSET $2
-      """
-      configuration: "postgresql_config"
-    )
   " Queries for type 'vote' "
   getVote(id: ID!): [vote]
     @dbquery(
       type: "postgresql"
       schema: "public"
       query: """
-      SELECT "created_at", "id", "post_id", "upvote", "username" FROM "vote" WHERE "post_id" = $1
+      SELECT * FROM "vote" WHERE "post_id" = $1
       ORDER BY "created_at" desc
       """
       configuration: "postgresql_config"
